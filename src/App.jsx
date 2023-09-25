@@ -6,9 +6,11 @@ import {CreateNote} from "./CreateNote"
 
 
 function App() {
+
+  // function CreateNotes 
   return <Routes>
     <Route path="/" element={<Home />}/>
-    <Route path="/create" element={<CreateNote />}/>
+    <Route path="/create" element={<CreateNote  />}/>
     <Route path="*" element={<Navigate to ="/" />}/>
 
     
