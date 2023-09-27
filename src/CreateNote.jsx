@@ -11,15 +11,21 @@ export function CreateNote(){
     const titleref = useRef(null)
     const bodyRef = useRef(null)
     const navigate = useNavigate();
-    const options=[
+    const createOption= (label)=>({
+        label,
+        value:label,
+    })
+    const Defaultoptions=[
         { label:'css',value:'css'},
     ]
-    const [selectedOptions, setSelectedOptions] = useState([]);
-    const [Options, setOptions] = useState(options);
-    const [NewOptions, setNewOptions] = useState(options);
-    useEffect(() => {
-        console.log("NewOptions changed: ", Options);
-      }, [Options]);
+    
+    // const [selectedOptions, setSelectedOptions] = useState([]);
+    const [isLoading, setIsLoading] = useState(false);
+    const [Options, setOptions] = useState(Defaultoptions);
+    const [value, setValue] = useState([]);
+    // useEffect(() => {
+    //     console.log("NewOptions changed: ", Options);
+    //   }, [Options]);
 
     const handleSubmit =(e)=>{
         e.preventDefault();
@@ -29,32 +35,20 @@ export function CreateNote(){
         alert("Saved..")
     }
     const handlechange=(e)=>{
-        console.log("change,",e[0].value);
-        setSelectedOptions(e);
+        setValue(e);
         
     }
 
-    const handleInputChange = ( inputVal,action)=>{
-        // console.log("inputchange ",inputVal)
-        // setSelectedOptions(inputVal);
-        
-        if(action.action === 'set-value'){
-            
-            if(!(NewOptions.some((o)=>Object.values(o).includes(inputVal)))){
-                const x = [...NewOptions,Options[0]]
-                console.log("in handlechange if...",x)
-                //
-                setNewOptions(x)
-                
-            }
-        }
-        else{
-            
-            console.log("in set...",inputVal)
-            setOptions([{label:inputVal,value:inputVal}]) 
-        }
+    const handleCreate = (inputValue)=>{
+        setIsLoading(true);
+        setTimeout(()=>{
+            const newOpt = createOption(inputValue);
+            setIsLoading(false);
+            setOptions((prev)=>[...prev,newOpt]);
+            setValue((prev)=>[...prev,newOpt]);
+        },1000);
     }
-
+    
 
     return(
        <>
@@ -64,7 +58,15 @@ export function CreateNote(){
         <input ref = {titleref} type="text" id="title" name="title" className={styles["name-input"]}  />
 
         <label  className={styles["tags"]}>Add tags</label>
-        <CreatableReactSelect className={styles["creatable"]}  isMulti options={NewOptions} value={selectedOptions} onChange={handlechange} onInputChange={handleInputChange} onCreateOption={} />
+        <CreatableReactSelect className={styles["creatable"]}  
+        isClearable
+        isDisabled={isLoading}
+        isLoading={isLoading}
+        isMulti 
+        options={Options} 
+        value={value} 
+        onChange={handlechange}  
+        onCreateOption={handleCreate} />
 
         <label htmlFor="body" className={styles["body-label"]}>Jot it down</label>
         <textarea ref = {bodyRef} className={styles["textarea"]} id="body" name="body" ></textarea>
