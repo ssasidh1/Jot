@@ -8,9 +8,9 @@ import {v4 as uuidv4} from 'uuid';
 
 export function CreateNote(){
 
-    const titleref = useRef(null)
-    const bodyRef = useRef(null)
-    const navigate = useNavigate();
+    
+    const formRef = useRef(null)
+   
     const createOption= (label)=>({
         label,
         value:label,
@@ -24,15 +24,23 @@ export function CreateNote(){
     const [Options, setOptions] = useState(Defaultoptions);
     const [value, setValue] = useState([]);
     // useEffect(() => {
-    //     console.log("NewOptions changed: ", Options);
-    //   }, [Options]);
+    //     console.log("NewOptions changed: ", value);
+    //   }, [value]);
 
     const handleSubmit =(e)=>{
         e.preventDefault();
-        console.log("inisde submit")
-        useLocalStorage('data',{title:titleref.current.value,body:bodyRef.current.value})
+        console.log("inisde submit", formRef.current.keys.value)
+        useLocalStorage('data',{title:formRef.current.title.value,
+                                body:formRef.current.body.value,
+                                keys:formRef.current.keys.value,
+                                tags:value})
         //console.log(Options);
+
         alert("Saved..")
+        formRef.current.reset();
+        setValue([]);
+
+        
     }
     const handlechange=(e)=>{
         setValue(e);
@@ -52,10 +60,10 @@ export function CreateNote(){
 
     return(
        <>
-       <form className={styles['form-data']} onSubmit= {handleSubmit}>
+       <form className={styles['form-data']} onSubmit= {handleSubmit} ref={formRef}>
 
         <label htmlFor="title" className={styles["name-label"]}>Start with a Title</label>
-        <input ref = {titleref} type="text" id="title" name="title" className={styles["name-input"]}  />
+        <input  type="text" id="title" name="title" className={styles["name-input"]}  />
 
         <label  className={styles["tags"]}>Add tags</label>
         <CreatableReactSelect className={styles["creatable"]}  
@@ -66,13 +74,13 @@ export function CreateNote(){
         options={Options} 
         value={value} 
         onChange={handlechange}  
-        onCreateOption={handleCreate} />
+        onCreateOption={handleCreate} name="tags" />
 
         <label htmlFor="body" className={styles["body-label"]}>Jot it down</label>
-        <textarea ref = {bodyRef} className={styles["textarea"]} id="body" name="body" ></textarea>
+        <textarea  className={styles["textarea"]} id="body" name="body" ></textarea>
 
-        <label htmlFor="keys" className={styles["keypts-label"]}>Keys</label>
-        <textarea className={styles["textarea-keys"]} id="keys" name="keys"></textarea>
+        <label htmlFor="keys"  className={styles["keypts-label"]}>Keys</label>
+        <textarea  className={styles["textarea-keys"]} id="keys" name="keys"></textarea>
 
         <input className={styles["save-btn"]} type="submit" value="Save"/>
 

@@ -1,7 +1,7 @@
 import { useEffect,useState } from "react"
 
 export function useLocalStorage(key,initialValue){
-   
+   console.log("inside uselocal",initialValue)
     let notes;
     try
     {
