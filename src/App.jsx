@@ -1,9 +1,8 @@
 import { Routes, Route, Navigate } from 'react-router-dom';
-import './App.css';
 import {Home} from "./Home"
-import {Check} from "./check"
 import {CreateNote} from "./CreateNote"
 import { NotesStorage } from './NotesStorage';
+import { EditNotes } from './EditNotes';
 
 
 function App() {
@@ -13,7 +12,7 @@ function App() {
     <Route path="/" element={<Home />}/>
     <Route path="/create" element={<CreateNote  />}/>
     <Route path="*" element={<Navigate to ="/" />}/>
-    <Route path="/all"  element={<NotesStorage />} />
+    <Route path="/edit" element={<EditNotes />}/>
     
   </Routes>
 }

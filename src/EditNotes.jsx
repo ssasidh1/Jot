@@ -1,12 +1,15 @@
 import styles from "./createNote.module.css"
 import { useState,useRef, useEffect } from "react"
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import { useNavigate } from 'react-router-dom'
 import CreatableReactSelect from "react-select/creatable"
-import { useLocalStorage } from "./useLocalStorage";
+import { updateStorage } from "./useLocalStorage";
 
-export function CreateNote(){
+export function EditNotes(){
 
+    const loc = useLocation();
+    const props = loc.state && loc.state.editData;
+    console.log("edit",loc.state.editData)
     
     const formRef = useRef(null)
     const navigate = useNavigate();
@@ -14,12 +17,21 @@ export function CreateNote(){
         label,
         value:label,
     })
-    const Defaultoptions=[
+    let Defaultoptions=[
         { label:'css',value:'css'},
     ]
+    if(props.tags.length !=0)
+    Defaultoptions = [...Defaultoptions, props.tags]
+    console.log(props.tags)
     const [isLoading, setIsLoading] = useState(false);
     const [Options, setOptions] = useState(Defaultoptions);
     const [value, setValue] = useState([]);
+    const [form, setForm] = useState({
+        title:props.title,
+        body:props.body,
+        keys:props.keys,
+    }
+    )
    
     
     const handleSubmit =(e)=>{
@@ -30,7 +42,7 @@ export function CreateNote(){
                     keys:formRef.current.keys.value,
                     tags:value}
    
-        useLocalStorage('data',initialValue)
+            updateStorage('data',initialValue,props.id)
         formRef.current.reset();
         alert("Saved")
 
@@ -51,13 +63,20 @@ export function CreateNote(){
         },1000);
     }
     
+    const handleOnChange = (event) =>{
+        const {name,value} = event.target;
+        setForm((prev)=>({
+            ...prev,
+            [name]:value,
+    }))
+    }
 
     return(
        <>
        <form className={styles['form-data']} onSubmit= {handleSubmit  } ref={formRef}>
 
-        <label htmlFor="title" className={styles["name-label"]}>Start with a Title</label>
-        <input  type="text" id="title" name="title" className={styles["name-input"] }  required/>
+        <label htmlFor="title" className={styles["name-label"]}>Title</label>
+        <input  type="text" id="title" name="title" className={styles["name-input"] } value={form.title} onChange={handleOnChange} required/>
 
         <label  className={styles["tags"]}>Add tags</label>
         <CreatableReactSelect className={styles["creatable"]}  
@@ -71,10 +90,10 @@ export function CreateNote(){
         onCreateOption={handleCreate} name="tags" />
 
         <label htmlFor="body" className={styles["body-label"]}>Jot it down</label>
-        <textarea  className={styles["textarea"]} id="body" name="body" required></textarea>
+        <textarea  className={styles["textarea"]} id="body" name="body"  value = {form.body} onChange={handleOnChange} required></textarea>
 
         <label htmlFor="keys"  className={styles["keypts-label"]}>Keys</label>
-        <textarea  className={styles["textarea-keys"]} id="keys" name="keys" ></textarea>
+        <textarea  className={styles["textarea-keys"]} id="keys" name="keys" value = {form.keys} onChange={handleOnChange} ></textarea>
         
            
         <input className={styles["save-btn"]} type="submit" disabled = {isLoading} value="Save" />

@@ -1,0 +1,42 @@
+.container{
+    position: absolute;
+    background-color: red;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    top:100%;
+    gap: 20px;
+    width: 100%;
+}
+
+.grid{
+    display: grid;
+    
+    grid-gap: 20px;
+}
+
+.flex-card{
+    display:column;
+    flex-direction: row;
+    width: 200px;
+    padding:15px;
+    height:200px;
+    margin-bottom: 10px;
+    overflow: hidden;
+    background-color: pink;
+    
+}
+
+.card-title{
+    background-color: green;
+    font-size:20px;
+}
+
+.card-body{
+    flex-grow: 1;
+    background-color: yellow;
+    font-size: 14px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    height: 100px;
+    align-self: flex-end;
+}
