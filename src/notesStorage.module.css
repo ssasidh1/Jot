@@ -8,15 +8,10 @@
     width: 100%;
 }
 
-.grid{
-    display: grid;
-    
-    grid-gap: 20px;
-}
 
 .flex-card{
-    display:column;
-    flex-direction: row;
+    display: flex;
+    flex-direction: column;
     width: 200px;
     padding:15px;
     height:200px;
@@ -29,6 +24,9 @@
 .card-title{
     background-color: green;
     font-size:20px;
+    width: 100%;
+    height: auto;
+    text-align: center;
 }
 
 .card-body{
@@ -38,5 +36,6 @@
     overflow: hidden;
     text-overflow: ellipsis;
     height: 100px;
+    width: 200px;
     align-self: flex-end;
 }

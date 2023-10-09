@@ -3,29 +3,45 @@ import { NotesStorage } from "./NotesStorage";
 
 export function useLocalStorage(key,initialValue){
 //    console.log("inside uselocal",initialValue)
-    let notes;
+    let notes,ind;
     try
     {
         const data= localStorage.getItem(key);
-        notes = data ? JSON.parse(data):[];
+        notes = data ? new Map(JSON.parse(data)):new Map();
+        const removedInd = localStorage.getItem('removeInd')
+        ind = removedInd ? new Set(JSON.parse(removedInd)): new Set();
         
     }
     catch(err){
+        console.log(" err type ",typeof(notes))
         console.log(err);
 
     }
     
-        if(notes.length == 0){
-           initialValue["id"] = "0"
+        if(notes.size == 0){
+           
+           notes.set(0, initialValue);
         }
         else{
-            initialValue["id"] = notes.length.toString()
+            if(ind.size != 0 ){
+                for(const key of ind){
+                    notes.set(key, initialValue);  
+                    console.log("local ", key, initialValue, ind)
+                    ind.delete(key);
+                    localStorage.setItem('removeInd',JSON.stringify(Array.from(ind)))
+                    break;
+                }
+            }
+            else{
+                notes.set(notes.size, initialValue);  
+            }
+            
         }
-        notes.push(initialValue);
-        // console.log(notes);
-    
+        // const check = JSON.stringify(Array.from(notes))
+        // console.log(new Map(JSON.parse(check)));
+        // //console.log(check);
 
-    localStorage.setItem(key,JSON.stringify(notes))
+    localStorage.setItem(key,JSON.stringify(Array.from(notes)))
 
     
 }
@@ -36,7 +52,7 @@ export function updateStorage(key,initialValue,id){
         try
         {
             const data= localStorage.getItem(key);
-            notes = data ? JSON.parse(data):[];
+            notes = data ? new Map(JSON.parse(data)):new Map();
             
         }
         catch(err){
@@ -44,35 +60,36 @@ export function updateStorage(key,initialValue,id){
     
         }
         
-            let updateItem =  notes.find(item=>item.id == id)
-            if(updateItem){
-                updateItem.title = initialValue.title;
-                updateItem.body = initialValue.body;
-                updateItem.tags = initialValue.tags;
-                updateItem.keys = initialValue.keys;
-            }
+             notes.set(id,initialValue);
+            // if(updateItem){
+            //     updateItem.title = initialValue.title;
+            //     updateItem.body = initialValue.body;
+            //     updateItem.tags = initialValue.tags;
+            //     updateItem.keys = initialValue.keys;
+            // }
+
             // console.log(notes);
         
     
-        localStorage.setItem(key,JSON.stringify(notes))
+            localStorage.setItem(key,JSON.stringify(Array.from(notes)))
     
         
 }
 
-export function getStorage(key,title){
+export function getStorage(key,id){
     //    console.log("inside uselocal",initialValue)
         let notes;
         try
         {
             const data= localStorage.getItem(key);
-            notes = data ? JSON.parse(data):[];
+            notes = data ? new Map(JSON.parse(data)):new Map();
             
         }
         catch(err){
             console.log(err);
     
         }
-        let findItem =  notes.find(item=>item.title == title)
+        let findItem =  notes.get(id)
         if(findItem){
             return findItem;
         }
@@ -87,33 +104,45 @@ export function getStorage(key,title){
         try
         {
             const data= localStorage.getItem('data');
-            notes = data ? JSON.parse(data):[];
+            notes = data ? new Map(JSON.parse(data)):new Map();
             
         }
         catch(err){
             console.log(err);
     
         }
-        if(notes != null){
-            const tags = notes.map((item)=>
-                 item.tags
-            )
-            const filteredTags = tags.filter((item)=> item.length>0)
-            const final = [];
+        if(notes.size != 0){
+            // const tags = notes.map((item)=>
+            //      item.tags
+            // )
+            // const filteredTags = tags.filter((item)=> item.length>0)
+            // const final = [];
             const seenValues = new Set();
 
-            filteredTags.forEach((inner)=>{
-                inner.forEach((obj)=>{
-                    if(!seenValues.has(obj.value)){
-                        final.push(obj);
-                        seenValues.add(obj.value);
-                    }
-                })
-            })
+            // filteredTags.forEach((inner)=>{
+            //     inner.forEach((obj)=>{
+            //         if(!seenValues.has(obj.value)){
+            //             final.push(obj);
+            //             seenValues.add(obj.value);
+            //         }
+            //     })
+            // })
+            const tagAr = []
+            notes.forEach((value)=>{
+                if(value.tags.length != 0){
+                    
+                    value.tags.map((t)=> {
+                        if(!seenValues.has(t)){
+                            tagAr.push(t);
+                            seenValues.add(t);
+                    }})
+                }
+            }
+            )
             
-            return final;
+            return tagAr;
         }
-        return null;
+        return [];
         
     }
 
@@ -123,41 +152,85 @@ export function getStorage(key,title){
         try
         {
             const data= localStorage.getItem('data');
-            notes = data ? JSON.parse(data):[];
+            notes = data ? new Map(JSON.parse(data)):new Map();
             
         }
         catch(err){
             console.log(err);
     
         }
-        if(notes != null){
-            
-            const filteredTags = notes.filter((item)=> item.tags.length>0)
-            console.log("tag ",filteredTags)
-            const final = [];
-            const seenValues = new Set();
-
-            filteredTags.forEach((inner)=>{
-                console.log("inner ",inner.tags)
-                inner.tags.forEach((obj)=>{
-                    console.log("obbby", obj.value)
-                  tag.forEach((t)=>{
-                    if(obj.value == t.value && !seenValues.has(inner.id)){
-                         final.push(inner);
-                         seenValues.add(inner.id);
-                      }
-                  })
-                })
+        const dataTag = new Map();
+        if(notes.size != 0){
+            notes.forEach((val,key)=>{
+                
+                if(val.tags.length !=0){
+                    for(const t of val.tags){
+                        if(t.value == tag){
+                            dataTag.set(key,val);
+                            break;
+                        }
+                    }
+                }
             })
-            console.log("end", final)
-            if(final.length !=0)
-            return final;
+            
         }
-        return null;
+        //console.log("dt in fn ", dataTag)
+        if(dataTag.size != 0) return dataTag;
+        return new Map();
         
     }
 
 
+    export function removeItem(id){
+        let notes , ind;
+        console.log("removeitem",id)
+        try
+        {
+            const data= localStorage.getItem('data');
+            notes = data ? new Map(JSON.parse(data)):new Map();
+            const removedInd = localStorage.getItem('removeInd');
+            ind = removedInd ? new Set(JSON.parse(removedInd)):new Set();
+            
+        }
+        catch(err){
+            console.log(err);
+    
+        }
+        if(notes.has(id)){
+                console.log("id",id)
+                ind.add(id);
+                console.log("ind",ind);
+                console.log("id")
+
+            notes.delete(id);
+            // const postRemove  = notes.filter((item)=>{
+            //     return item.id !=id
+            //     //console.log("id", id, item.id)
+            // })
+            localStorage.setItem('removeInd',JSON.stringify(Array.from(ind)))
+            localStorage.setItem('data',JSON.stringify(Array.from(notes)))
+        }
+        const data= localStorage.getItem('data');
+        const notesP = data ? new Map(JSON.parse(data)):new Map();
+        console.log(notesP)
+        return notesP;
+    }
+
+
+    export function notesFetchForHome(){
+
+        const data= localStorage.getItem('data');
+        const notes = data ? new Map(JSON.parse(data)):new Map();
+        if(notes.size == 0) return new Map();
+        const last10 = Array.from(notes.entries()).slice(-10).reverse();
+        console.log("last10",last10)
+        const fetchMap = new Map();
+        for(const [key,value] of last10){
+            fetchMap.set(key,value);
+        }
+        return fetchMap;
+        
+    }
 
 
 

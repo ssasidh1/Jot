@@ -3,7 +3,7 @@ import { useState,useRef, useEffect } from "react"
 import { Link } from "react-router-dom";
 import { useNavigate } from 'react-router-dom'
 import CreatableReactSelect from "react-select/creatable"
-import { useLocalStorage } from "./useLocalStorage";
+import { getTags, useLocalStorage } from "./useLocalStorage";
 
 export function CreateNote(){
 
@@ -14,9 +14,8 @@ export function CreateNote(){
         label,
         value:label,
     })
-    const Defaultoptions=[
-        { label:'css',value:'css'},
-    ]
+    const tagval  =getTags()
+    const Defaultoptions=tagval ? tagval : [];
     const [isLoading, setIsLoading] = useState(false);
     const [Options, setOptions] = useState(Defaultoptions);
     const [value, setValue] = useState([]);
@@ -24,14 +23,12 @@ export function CreateNote(){
     
     const handleSubmit =(e)=>{
         e.preventDefault();
-        console.log("inisde submit", formRef.current.keys.value)
         const initialValue = { title:formRef.current.title.value,
                     body:formRef.current.body.value,
                     keys:formRef.current.keys.value,
                     tags:value}
    
         useLocalStorage('data',initialValue)
-        formRef.current.reset();
         alert("Saved")
 
         

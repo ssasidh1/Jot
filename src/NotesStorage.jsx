@@ -2,33 +2,53 @@ import { useEffect, useState } from "react";
 import styles from "./notesStorage.module.css"
 import { EditNotes } from "./EditNotes";
 import { useNavigate } from 'react-router-dom'
-import { notesFetchForHome } from "./notesFetch";
+import { removeItem } from "./useLocalStorage";
 export function NotesStorage(props){
-    const notes = props.data;
-    if(notes == null) return<><h1>No notes yet</h1></>
+    // const notes = props.data;
+    console.log("notes data ",props.data)
     const navigate = useNavigate();
-    const [edit,setEdit] = useState({});
+    const [edit,setEdit] = useState([]);
+    
+    const [notes, setNotes] = useState(new Map())
+    
     const handleClick = (id)=>{
-        setEdit(notes[id])
+      const updateEdit = [];
+      updateEdit.push(id)
+      updateEdit.push(notes.get(id))
+      
+        setEdit(updateEdit)
         
     }
     useEffect(()=>{
-      if(JSON.stringify(edit) != '{}'){
-        console.log("use ",edit)
+      setNotes(props.data)
+    },[props.data])
+
+    const handleDeleteClick = (id)=>{
+      const newNote  =removeItem(id)
+      setNotes(newNote)
+    }
+    useEffect(()=>{
+      console.log("edit data ",edit)
+      console.log("edit data 0 ",edit[0])
+      if(edit.length!=0){
         navigate('/edit', {state:{editData: edit}})
       }
     },[edit])
     
+      
+    if(notes.size == 0) return<><h1>No notes yet</h1></>
     return(
     <div className={styles["container"]}>
   
+        
         {
-           notes.map((note,index)=>(
-            
-             <div key = {note.id} className={styles["flex-card"]}>
-                <h2 className={styles["card-title"]}>{note.title}</h2>
-                <p className={styles["card-body"]}>{note.body}</p>
-                <button className={styles["card-btn"]} onClick={()=>handleClick(note.id)}>view more..</button>
+           Array.from(notes.entries()).map((note,index)=>(
+          
+             <div key = {note[0]} className={styles["flex-card"]}>
+                <h2 className={styles["card-title"]}>{note[1].title}</h2>
+                <p className={styles["card-body"]}>{note[1].body}</p>
+                <button className={styles["card-btn"]} onClick={()=>handleClick(note[0])}>view more..{console.log("note html index",index)}</button>
+                <button className={styles["card-btn"]} onClick={()=>handleDeleteClick(note[0])}>Delete</button>
              </div>
              
              

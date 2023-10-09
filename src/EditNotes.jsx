@@ -9,8 +9,7 @@ export function EditNotes(){
 
     const loc = useLocation();
     const props = loc.state && loc.state.editData;
-    console.log("edit",loc.state.editData)
-    
+    console.log("edit props", props[1])
     const formRef = useRef(null)
     const navigate = useNavigate();
     const createOption= (label)=>({
@@ -20,29 +19,27 @@ export function EditNotes(){
     let Defaultoptions=[
         { label:'css',value:'css'},
     ]
-    if(props.tags.length !=0)
-    Defaultoptions = [...Defaultoptions, props.tags]
-    console.log(props.tags)
+    if(props[1].tags.length !=0)
+    Defaultoptions = [...Defaultoptions, props[1].tags]
     const [isLoading, setIsLoading] = useState(false);
     const [Options, setOptions] = useState(Defaultoptions);
     const [value, setValue] = useState([]);
     const [form, setForm] = useState({
-        title:props.title,
-        body:props.body,
-        keys:props.keys,
+        title:props[1].title,
+        body:props[1].body,
+        keys:props[1].keys,
     }
     )
    
     
     const handleSubmit =(e)=>{
         e.preventDefault();
-        console.log("inisde submit", formRef.current.keys.value)
         const initialValue = { title:formRef.current.title.value,
                     body:formRef.current.body.value,
                     keys:formRef.current.keys.value,
                     tags:value}
    
-            updateStorage('data',initialValue,props.id)
+            updateStorage('data',initialValue,props[0])
         formRef.current.reset();
         alert("Saved")
 
