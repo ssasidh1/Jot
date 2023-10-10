@@ -1,3 +1,5 @@
+@import url('https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@1,400;1,500&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@1,300;1,400;1,500&family=Roboto+Slab:wght@500&display=swap');
 .container{
     position: absolute;
     display: grid;
@@ -27,7 +29,7 @@
 .card-title{
     position: absolute;
     top:1%;
-    font-size:20px;
+    font-family: 'Roboto Slab', serif;
     width: 100%;
     height: auto;
     text-align: justify;
@@ -39,9 +41,9 @@
     flex-grow: 1;
     top:20%;
     left: 5%;
-    background-color: green;
     padding: 10px;
-    font-size: 14px;
+    font-family: 'Open Sans', sans-serif;
+    color: rgb(76, 82, 82);
     overflow: hidden;
     text-overflow: ellipsis;
     height: 90px;

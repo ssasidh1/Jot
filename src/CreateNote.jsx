@@ -4,7 +4,8 @@ import { Link } from "react-router-dom";
 import { useNavigate } from 'react-router-dom'
 import CreatableReactSelect from "react-select/creatable"
 import { getTags, useLocalStorage } from "./useLocalStorage";
-
+import {RichTextEditor} from "./RichTextEditor";
+import parse from 'html-react-parser';
 export function CreateNote(){
 
     
@@ -19,6 +20,7 @@ export function CreateNote(){
     const [isLoading, setIsLoading] = useState(false);
     const [Options, setOptions] = useState(Defaultoptions);
     const [value, setValue] = useState([]);
+    const [body,setBody] = useState('');
    
     
     const handleSubmit =(e)=>{
@@ -48,7 +50,9 @@ export function CreateNote(){
         },1000);
     }
     
-
+    const setBodyContent=(e)=>{
+        setBody(e.target.value)
+    }
     return(
        <>
        <form className={styles['form-data']} onSubmit= {handleSubmit  } ref={formRef}>
@@ -68,7 +72,8 @@ export function CreateNote(){
         onCreateOption={handleCreate} name="tags" />
 
         <label htmlFor="body" className={styles["body-label"]}>Jot it down</label>
-        <textarea  className={styles["textarea"]} id="body" name="body" required></textarea>
+        <textarea  className={styles["textarea"]} id="body" name="body" value={parse(body)}
+        onChange={setBodyContent} required></textarea>
 
         <label htmlFor="keys"  className={styles["keypts-label"]}>Keys</label>
         <textarea  className={styles["textarea-keys"]} id="keys" name="keys" ></textarea>
@@ -81,7 +86,9 @@ export function CreateNote(){
         <input className={styles["cancel-btn"]} type="submit" disabled = {isLoading} value="Cancel" />
         </Link>
        </form>
-       {/* //<NotesStorage data={initialVal} />  */}
+       {/* <RichTextEditor body={body} setBody={setBody}/> */}
        </>
+       
     )
+    
 }
