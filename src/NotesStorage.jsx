@@ -47,8 +47,11 @@ export function NotesStorage(props){
              <div key = {note[0]} className={styles["flex-card"]}>
                 <h2 className={styles["card-title"]}>{note[1].title}</h2>
                 <p className={styles["card-body"]}>{note[1].body}</p>
-                <button className={styles["card-btn"]} onClick={()=>handleClick(note[0])}>view more..{console.log("note html index",index)}</button>
-                <button className={styles["card-btn"]} onClick={()=>handleDeleteClick(note[0])}>Delete</button>
+                <button className={styles["view-btn"]} onClick={()=>handleClick(note[0])}>
+                <img src="/pencil-square.svg" alt="edit-button" border="0" className={styles.edit} /></button>
+                <button className={styles["delete-btn"]} onClick={()=>handleDeleteClick(note[0])}>
+                <img src="/trash-fill.svg" alt="edit-button" border="0" className={styles.trash} />
+                </button>
              </div>
              
              
